@@ -66,11 +66,8 @@ Three separate, logically distinct Reveal.js documents, plus any required data, 
 
 ## Demonstration 2: REIT total return index
 
-- Objective: demonstrate how to construct a total return index from listed REIT share prices and dividends, using a small selection of UK REITs.
-- Show how to obtain the data from S&P Capital IQ, calculate price returns, incorporate dividends and build a cumulative index.
-- Return, and cumulative index with a starting value of 100:
-
-  $$R_t=\frac{P_t-P_{t-1}+D_t}{P_{t-1}} \qquad TRI_t=TRI_{t-1}(1+R_t)$$
+- Objective: demonstrate how to construct a total return index for US industrial and infrastructure REITs. This replaces the UK REITs in the original brief.
+- Screen and save the company list in S&P Capital IQ, export each company's Total Market Return series and rebase it to 100.
 
 - Explain the assumptions, particularly dividend timing and reinvestment.
 - Make clear that a REIT total return index measures shareholder returns, reflecting leverage, corporate costs and stock market valuation effects. It is not equivalent to an unleveraged index of directly owned commercial properties.
@@ -97,4 +94,5 @@ Three separate, logically distinct Reveal.js documents, plus any required data, 
 - Start with acquisition price and passing rent, then progressively introduce market rent, vacancy, operating expenditure, capital expenditure, financing terms and terminal sale assumptions.
 - Keep inputs consistent so students can calculate several metrics for the same building.
 - Keep figures realistic for Cambridge commercial property, and label them clearly as illustrative unless independently sourced.
+- Purchase costs are 6.8% (illustrative). The UK yield slide uses them; the cash flows, IRR and NPV currently exclude them.
 - Include occasional questions asking students to calculate or interpret a metric before the answer is revealed.
