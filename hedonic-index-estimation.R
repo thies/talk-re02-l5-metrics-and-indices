@@ -1,6 +1,6 @@
 # Cambridge residential hedonic price index
 # Run this file with the project directory as the working directory.
-# Input: sales_cambridge.csv (Cambridge Land Registry teaching sample)
+# Input: sales_cambridge.csv (Land Registry sales matching "CAMBRIDGE", to August 2021)
 # The source data and example slides come from the REM1 Session 3 materials.
 
 sales <- read.csv("sales_cambridge.csv", header = FALSE, stringsAsFactors = FALSE)
