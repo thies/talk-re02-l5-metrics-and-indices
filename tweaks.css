@@ -151,12 +151,6 @@ mark{
 .small { font-size: 0.7em; }
 .muted { color: #586576; }
 .formula { text-align: center; font-size: 0.85em; }
-.callout {
-  border-left: 0.2em solid #2fd1d1;
-  background-color: rgba(64,224,208,0.12);
-  padding: 0.3em 0.6em;
-  font-size: 0.75em;
-}
 
 /* white title anchored to the foot of a photo title slide */
 .reveal .slides section.bottomtitle {
