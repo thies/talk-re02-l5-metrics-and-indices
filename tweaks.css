@@ -157,3 +157,14 @@ mark{
   padding: 0.3em 0.6em;
   font-size: 0.75em;
 }
+
+/* white title anchored to the foot of a photo title slide */
+.reveal .slides section.bottomtitle {
+  top: auto !important;
+  bottom: 0;
+}
+.reveal .slides section.bottomtitle,
+.reveal .slides section.bottomtitle h2,
+.reveal .slides section.bottomtitle a {
+  color: #ffffff;
+}
