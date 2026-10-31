@@ -151,6 +151,7 @@ mark{
 .small { font-size: 0.7em; }
 .muted { color: #586576; }
 .formula { text-align: center; font-size: 0.85em; }
+.formula.small { font-size: 0.6em; }
 
 /* white title anchored to the foot of a photo title slide */
 .reveal .slides section.bottomtitle {
