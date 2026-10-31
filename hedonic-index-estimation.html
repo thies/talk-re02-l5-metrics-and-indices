@@ -2,11 +2,11 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Cambridge Hedonic Price Index — RE02</title>
+<title>Estimating a Hedonic Price Index</title>
 <link rel="stylesheet" href="dist/reset.css"><link rel="stylesheet" href="dist/reveal.css"><link rel="stylesheet" href="dist/theme/white.css" id="theme"><link rel="stylesheet" href="plugin/highlight/monokai.css"><link rel="stylesheet" href="tweaks.css">
 </head>
 <body><div class="reveal"><div class="slides">
-<section class="center"><h2>Building a Cambridge<br>Hedonic Price Index</h2><p class="small">Professor Thies Lindenthal<br><a href="mailto:htl24@cam.ac.uk">htl24@cam.ac.uk</a></p></section>
+<section class="center"><h2>Estimating a<br>Hedonic Price Index</h2><p class="small">Professor Thies Lindenthal<br><a href="mailto:htl24@cam.ac.uk">htl24@cam.ac.uk</a></p></section>
 <section><h2>What you should be able to explain</h2><ul><li>Why average and median prices can move even when like-for-like prices do not.</li><li >How observed property characteristics help control for quality differences.</li><li >How time-dummy coefficients become a price index.</li><li >What the resulting index does—and does not—measure.</li></ul></section>
 <section><h2>The data: Cambridge Land Registry sales</h2><ul><li>About 113,000 residential transactions, 1995–2021.</li><li >Transaction price, date, property type, new-build status, tenure and address fields.</li><li >All recorded sales matching “CAMBRIDGE”, to August 2021; check coverage and cleaning before use.</li></ul><div class="figure"><img src="imgs/cambridgedata.png" height="240" alt="Summary of Cambridge sales data"><p class="source">Based on the Cambridge example used in REM1 Session 3.</p></div></section>
 <section><h2>Why a raw average can mislead</h2><p>Suppose property prices are unchanged:</p><table><thead><tr><th>Year</th><th>Detached sales</th><th>Flat sales</th><th>Mean price</th><th>Median price</th></tr></thead><tbody><tr><td>Year A</td><td>1 × £500,000</td><td>9 × £300,000</td><td>£320,000</td><td>£300,000</td></tr><tr ><td>Year B</td><td>9 × £500,000</td><td>1 × £300,000</td><td>£480,000</td><td>£500,000</td></tr></tbody></table><p class="callout">The mean rises 50% and the median 67%, with no price inflation at all. The mix of homes sold changed.</p></section>
