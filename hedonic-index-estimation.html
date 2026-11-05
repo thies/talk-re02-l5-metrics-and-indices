@@ -6,17 +6,17 @@
 <link rel="stylesheet" href="dist/reset.css"><link rel="stylesheet" href="dist/reveal.css"><link rel="stylesheet" href="dist/theme/white.css" id="theme"><link rel="stylesheet" href="plugin/highlight/monokai.css"><link rel="stylesheet" href="tweaks.css">
 </head>
 <body><div class="reveal"><div class="slides">
-<section class="bottomtitle" data-background-image="assets/hedonic-title-bg.jpg" data-background-size="cover"><h2>Estimating a Hedonic Price Index</h2><p class="small">Thies Lindenthal · <a href="mailto:htl24@cam.ac.uk">htl24@cam.ac.uk</a></p></section>
-<section><h2>What we will do<span class="subtitle"><br/>An applied introduction: roll your own index!</span></h2><ul><li>Develop various indices for residential real estate in Cambridge<ul><li>Mean and median sale prices</li><li>A hedonic index that controls for the mix of homes sold</li><li>A repeat-sales index based on homes sold more than once</li></ul></li><li>Compare the levels and annual returns of these indices</li></ul></section>
-<section><h2>The Data<span class="subtitle"><br/>Land Registry Price Paid Data (<a href="https://www.gov.uk/government/statistical-data-sets/price-paid-data-downloads">available here</a>)</span></h2><ul><li><a href="https://www.dropbox.com/s/17po0isp50in67k/sales_cambridge.csv?dl=0">About 113,000 residential transactions found for Cambridge</a>, 1995–2021</li><li >Transaction price, date, property type, new-build status, tenure and address fields</li><li >As always, check coverage and cleaning before use</li></ul><div class="figure"><img src="imgs/cambridgedata.png" height="240" alt="Summary of Cambridge sales data"></div><ul><li><a href="https://github.com/thies/teaching/blob/master/code/indices.R">All code is available on GitHub</a></li></ul></section>
-<section><h2>Average price<span class="subtitle"><br/>This is a very basic index already</span></h2><div class="figure"><img src="imgs/index_means.jpg" height="450" alt="Mean Cambridge sale price by year"></div></section>
-<section><h2>Mean, median and composition<span class="subtitle"><br/>Medians are less influenced by outliers.</span></h2><ul><li>Median prices reduce sensitivity to extreme transactions</li><li >Neither mean nor median adjusts for the types or locations of homes sold</li><li >Compare levels and annual changes, then inspect the composition of the sample</li></ul><div class="figure"><img src="imgs/index_medians.jpg" height="340" alt="Mean and median Cambridge sale price by year"></div></section>
-<section><h2>Rebase before comparing levels<span class="subtitle"><br/>Same starting value for better comparison.</span></h2><ul><li>Set the first year to 100: \(\text{Rebased index}_t=100\times\dfrac{\text{price measure}_t}{\text{price measure}_{\text{base}}}\)</li></ul><div class="figure"><img src="imgs/index_medians_rebased.jpg" height="310" alt="Rebased mean and median price series"></div><ul><li>Means and medians don’t <em>look</em> that different after rebasing</li></ul></section>
-<section><h2>Returns<span class="subtitle"><br/>Big differences, especially around 2007–2010. \(\tiny Return_t=(Index_t/Index_{t-1}-1)\times100\)</span></h2><div class="figure"><img src="imgs/index_returns.jpg" height="350" alt="Annual returns from mean and median Cambridge sale prices"></div><ul><li>Strong differences don’t instil confidence. Which one is correct?</li></ul></section>
-<section class="tablebullettext"><h2>Why a raw average can mislead<span class="subtitle"><br/>Quality changes or price changes?</span></h2><ul><li>Suppose property prices are unchanged:</li></ul><table><thead><tr><th>Year</th><th>Detached sales</th><th>Flat sales</th><th>Mean price</th><th>Median price</th></tr></thead><tbody><tr><td>Year A</td><td>1 × £500,000</td><td>9 × £300,000</td><td>£320,000</td><td>£300,000</td></tr><tr ><td>Year B</td><td>9 × £500,000</td><td>1 × £300,000</td><td>£480,000</td><td>£500,000</td></tr></tbody></table><ul><li><mark>The mean rises 50% and the median 67%, with no price inflation at all. The mix of homes sold changed.</mark></li></ul></section>
-<section><h2>Composition changes through time<span class="subtitle"><br/>The mix of homes sold shifts from year to year.</span></h2><ul><li>The share of flats, terraces, semi-detached and detached sales varies by year</li></ul><div class="figure"><img src="imgs/type_shares.jpg" height="360" alt="Property type shares by year"></div><ul><li><mark>If the mix changes, unadjusted prices combine market movement and changing sample composition</mark></li></ul></section>
-<section><h2>The hedonic idea<span class="subtitle"><br/>Hedonic regressions (nothing to do with hedonism)</span></h2><ul><li>A dwelling is a bundle of observable attributes</li><li>Property type, tenure and new-build status</li><li >Floor area, bedrooms and finer location measures where available</li><li >Estimate the contribution of attributes and time periods jointly</li><li>The Land Registry data have limited attribute detail; the model can adjust only for fields it contains</li></ul></section>
-<section><h2>Hedonic regression<span class="subtitle"><br/>Control for quality differences</span></h2><ul><li>Estimate quality-adjusted price changes relative to a base year</li><li>Equation: \(\ln(P_{i,t})=\alpha+\sum\limits_{k=1}^{K}\beta_kX_{i,k}+\sum\limits_{y=2}^{Y}\gamma_yD_{i,y}+\varepsilon_{i,t}\)</li><li>With<ul><li>Dependent variable: log sale price</li><li>\(X_{i,k}\): observed dwelling characteristics</li><li>\(D_{i,y}\): time-period indicators; base period \(y=1\) is omitted</li><li>\(\gamma_y\) estimates quality-adjusted log price change relative to the base</li></ul></li></ul></section>
+<section class="bottomtitle" data-background-image="assets/hedonic-title-bg.jpg" data-background-size="cover"><h2>Estimating a Hedonic Price Index</h2><p class="small">Thies Lindenthal · <a href="mailto:htl24@cam.ac.uk">htl24@cam.ac.uk</a></p><aside class="notes">In this recording, I’ll build a price index from Cambridge residential sales. We’ll start with simple averages, see why they can be misleading, and then estimate a hedonic index that adjusts for the characteristics recorded in the data.</aside></section>
+<section><h2>What we will do<span class="subtitle"><br/>An applied introduction: roll your own index!</span></h2><ul><li>Develop various transaction-based indices for residential real estate in Cambridge<ul><li>Mean and median sale prices</li><li>A hedonic index that controls for the mix of homes sold</li><li>A repeat-sales index based on homes sold more than once</li></ul></li><li>Compare the levels and annual returns of these indices</li></ul><aside class="notes">The aim is to understand how these indices are constructed and what each one measures. We’ll compare simple mean and median prices with two approaches that try to account for differences between the homes sold: hedonic regression and repeat sales.</aside></section>
+<section><h2>The Data<span class="subtitle"><br/>Land Registry Price Paid Data (<a href="https://www.gov.uk/government/statistical-data-sets/price-paid-data-downloads">available here</a>)</span></h2><ul><li><a href="https://www.dropbox.com/s/17po0isp50in67k/sales_cambridge.csv?dl=0">About 113,000 residential transactions found for Cambridge</a>, 1995–2021</li><li >Transaction price, date, property type, new-build status, tenure and address fields</li><li >As always, check coverage and cleaning before use</li></ul><div class="figure"><img src="imgs/cambridgedata.png" height="240" alt="Summary of Cambridge sales data"></div><ul><li><a href="https://github.com/thies/teaching/blob/master/code/indices.R">All code is available on GitHub</a></li></ul><aside class="notes">We use Land Registry Price Paid Data for transactions in Cambridge from 1995 to 2021, around 113,000 sales in this extract. The records include price, date, property type, new-build status, tenure and address details. That is useful, but it is not a full description of each home, and coverage and cleaning choices matter.</aside></section>
+<section><h2>Average price<span class="subtitle"><br/>This is a very basic index already</span></h2><div class="figure"><img src="imgs/index_means.jpg" height="450" alt="Mean Cambridge sale price by year"></div><aside class="notes">A first pass is to calculate the average sale price in each year. The resulting series is easy to understand, but it combines changes in market prices with changes in which properties happened to sell.</aside></section>
+<section><h2>Mean, median and composition<span class="subtitle"><br/>Medians are less influenced by outliers.</span></h2><ul><li>Median prices reduce sensitivity to extreme transactions</li><li >Neither mean nor median adjusts for the types or locations of homes sold</li><li >Compare levels and annual changes, then inspect the composition of the sample</li></ul><div class="figure"><img src="imgs/index_medians.jpg" height="340" alt="Mean and median Cambridge sale price by year"></div><aside class="notes">The median is no more demanding to calculate than the mean, and it is usually the better choice because it is less sensitive to a small number of unusually expensive or inexpensive transactions. But both measures describe the transactions in that year; neither adjusts for differences in property type, location or other characteristics. It helps to compare both levels and annual movements, while keeping sample composition in mind.</aside></section>
+<section><h2>Rebase before comparing levels<span class="subtitle"><br/>Same starting value for better comparison.</span></h2><ul><li>Set the first year to 100: \(\text{Rebased index}_t=100\times\dfrac{\text{price measure}_t}{\text{price measure}_{\text{base}}}\)</li></ul><div class="figure"><img src="imgs/index_medians_rebased.jpg" height="310" alt="Rebased mean and median price series"></div><ul><li>Means and medians don’t <em>look</em> that different after rebasing</li></ul><aside class="notes">To compare how the two measures evolve, we can put them on a common scale. Divide each year’s price measure by its value in the base year and multiply by 100. A value of 150 then means a 50 per cent increase relative to that measure’s own base-year level.</aside></section>
+<section><h2>Returns<span class="subtitle"><br/>Big differences, especially around 2007–2010. \(\tiny Return_t=(Index_t/Index_{t-1}-1)\times100\)</span></h2><div class="figure"><img src="imgs/index_returns.jpg" height="350" alt="Annual returns from mean and median Cambridge sale prices"></div><ul><li>Strong differences don’t instil confidence. Which one is correct?</li></ul><aside class="notes">Annual returns are calculated from the change in index level between adjacent years. The mean and median series can give quite different answers, especially around the financial crisis. Neither is automatically the correct measure of underlying price growth; the gap is a reason to examine what is driving the transactions.</aside></section>
+<section class="tablebullettext"><h2>Why a raw average can mislead<span class="subtitle"><br/>Quality changes or price changes?</span></h2><ul><li>Suppose property prices are unchanged:</li></ul><table><thead><tr><th>Year</th><th>Detached sales</th><th>Flat sales</th><th>Mean price</th><th>Median price</th></tr></thead><tbody><tr><td>Year A</td><td>1 × £500,000</td><td>9 × £300,000</td><td>£320,000</td><td>£300,000</td></tr><tr ><td>Year B</td><td>9 × £500,000</td><td>1 × £300,000</td><td>£480,000</td><td>£500,000</td></tr></tbody></table><ul><li><mark>The mean rises 50% and the median 67%, with no price inflation at all. The mix of homes sold changed.</mark></li></ul><aside class="notes">Here is a deliberately simple example. Detached houses always sell for £500,000 and flats for £300,000, so prices within each type do not change. But the sales mix shifts towards detached houses. The mean rises by 50 per cent and the median by about 67 per cent purely because of that change in composition.</aside></section>
+<section><h2>Composition changes through time<span class="subtitle"><br/>The mix of homes sold shifts from year to year.</span></h2><ul><li>The share of flats, terraces, semi-detached and detached sales varies by year</li></ul><div class="figure"><img src="imgs/type_shares.jpg" height="360" alt="Property type shares by year"></div><ul><li><mark>If the mix changes, unadjusted prices combine market movement and changing sample composition</mark></li></ul><aside class="notes">The actual data show that property type shares do vary over time. So a raw average blends two effects: movement in prices and a changing mix of homes sold. We need a method that can separate those effects, at least for the characteristics we observe.</aside></section>
+<section><h2>The hedonic idea<span class="subtitle"><br/>Hedonic regressions (nothing to do with hedonism)</span></h2><ul><li>A dwelling is a bundle of observable attributes</li><li>Property type, tenure and new-build status</li><li >Floor area, bedrooms and finer location measures where available</li><li >Estimate the contribution of attributes and time periods jointly</li><li>The Land Registry data have limited attribute detail; the model can adjust only for fields it contains</li></ul><p class="source">Overview of the characteristics used in hedonic models: <a href="https://doi.org/10.1080/10835547.2005.12090154">Sirmans, Macpherson &amp; Zietz (2005)</a>, <em>Journal of Real Estate Literature</em>.</p><aside class="notes">The hedonic approach treats a home as a bundle of attributes. In principle we can estimate the association of those attributes with sale price, alongside the association of the sale period. Here the available data include property type, tenure and new-build status, but not floor area, condition or a detailed location measure. The adjustment is therefore useful, but incomplete.</aside></section>
+<section><h2>Hedonic regression<span class="subtitle"><br/>Control for quality differences</span></h2><ul><li>Estimate quality-adjusted price changes relative to a base year</li><li>Equation: \(\ln(P_{i,t})=\alpha+\sum\limits_{k=1}^{K}\beta_kX_{i,k}+\sum\limits_{y=2}^{Y}\gamma_yD_{i,y}+\varepsilon_{i,t}\)</li><li>With<ul><li>Dependent variable: log sale price</li><li>\(X_{i,k}\): observed dwelling characteristics</li><li>\(D_{i,y}\): time-period indicators; base period \(y=1\) is omitted</li><li>\(\gamma_y\) estimates quality-adjusted log price change relative to the base</li></ul></li></ul><aside class="notes">We model log sale price as a function of observed characteristics and time-period indicators. One period is omitted as the reference, so each time coefficient measures the difference from that base period, conditional on the included characteristics. Because the dependent variable is in logs, exponentiating a time coefficient gives the relative price level, subject to the model’s specification.</aside></section>
 <section><h2>Prepare the file in R<span class="subtitle"><br/>Load, name and filter the <a href="https://www.dropbox.com/s/17po0isp50in67k/sales_cambridge.csv?dl=0">sales data</a></span></h2><pre><code class="language-r" data-trim data-noescape>sales &lt;- read.csv("sales_cambridge.csv", header = FALSE,
                   stringsAsFactors = FALSE)
 colnames(sales) &lt;- c("id", "price", "date", "postcode", "propertytype",
@@ -25,10 +25,238 @@ colnames(sales) &lt;- c("id", "price", "date", "postcode", "propertytype",
 sales$date &lt;- as.Date(sales$date)
 sales$year &lt;- format(sales$date, "%Y")
 sales &lt;- subset(sales, propertytype != "O" &amp; price &gt; 0)
-sales$year &lt;- factor(sales$year)</code></pre><ul><li>Inspect missing values, duplicates, price outliers and coverage before estimation</li></ul></section>
+sales$year &lt;- factor(sales$year)</code></pre><ul><li>Inspect missing values, duplicates, price outliers and coverage before estimation</li></ul><aside class="notes">In R, we load the CSV, assign readable column names, convert the transaction date and extract the year. We then exclude non-residential property types and non-positive prices, and make year a factor so R will create period indicators. In a real analysis, inspect missing values, duplicates, unusual prices and geographic coverage before fitting the model.</aside></section>
 <section><h2>Estimate and inspect the model<span class="subtitle"><br/>Log price on observed characteristics and year</span></h2><pre><code class="language-r" data-trim data-noescape>hed &lt;- lm(log(price) ~ propertytype + new + tenure + year,
           data = sales)
-summary(hed)</code></pre><ul><li >The omitted year is the reference period; with these factor levels it is the first year</li><li >Coefficient signs and sizes describe conditional price associations</li><li >The model controls only for observed fields included in the specification</li></ul></section>
+summary(hed)</code></pre><ul><li >The omitted year is the reference period; with these factor levels it is the first year</li><li >Coefficient signs and sizes describe conditional price associations</li><li >The model controls only for observed fields included in the specification</li></ul><aside class="notes">This is an ordinary least squares regression of log price on property type, new-build status, tenure and year. The summary is useful for checking the fitted model and its coefficients. Interpret these as conditional associations, not necessarily causal effects; unobserved attributes can still be correlated with both price and the included variables.</aside></section>
+<section><h2>Regression estimates<span class="subtitle"><br/>How much do quality characteristics contribute to price?</span></h2><ul><li>Flats are cheaper than detached homes: coefficient of \(-0.205\) translates into a 19% discount (\(\small e^{-0.205}-1=0.81-1=-0.19\))</li></ul><pre><code data-noescape data-line-numbers="7">
+==================================================
+                         Dependent variable:
+                    ------------------------------
+                              log(price)
+--------------------------------------------------
+propertytypeF                 -0.205***
+                               (0.009)
+
+propertytypeS                 -0.367***
+                               (0.003)
+
+propertytypeT                 -0.412***
+                               (0.003)
+
+newY                           0.127***
+                               (0.003)
+
+tenureL                       -0.491***
+                               (0.008)
+
+tenureU                         -0.260
+                               (0.412)
+
+year1996                        0.005
+                               (0.009)
+
+year1997                       0.134***
+                               (0.009)
+
+year1998                       0.239***
+                               (0.009)
+
+year1999                       0.327***
+                               (0.009)
+
+year2000                       0.492***
+                               (0.009)
+
+year2001                       0.627***
+                               (0.009)
+
+year2002                       0.799***
+                               (0.009)
+
+year2003                       0.918***
+                               (0.009)
+
+year2004                       0.987***
+                               (0.009)
+
+year2005                       1.044***
+                               (0.009)
+
+year2006                       1.127***
+                               (0.009)
+
+year2007                       1.232***
+                               (0.009)
+
+year2008                       1.168***
+                               (0.010)
+
+year2009                       1.126***
+                               (0.010)
+
+year2010                       1.214***
+                               (0.010)
+
+year2011                       1.230***
+                               (0.010)
+
+year2012                       1.258***
+                               (0.010)
+
+year2013                       1.350***
+                               (0.009)
+
+year2014                       1.434***
+                               (0.009)
+
+year2015                       1.551***
+                               (0.009)
+
+year2016                       1.645***
+                               (0.009)
+
+year2017                       1.689***
+                               (0.009)
+
+year2018                       1.638***
+                               (0.010)
+
+year2019                       1.642***
+                               (0.010)
+
+year2020                       1.666***
+                               (0.010)
+
+year2021                       1.704***
+                               (0.012)
+
+Constant                      11.550***
+                               (0.007)
+
+--------------------------------------------------
+Observations                   113,422
+R2                              0.658
+Adjusted R2                     0.658
+Residual Std. Error      0.412 (df = 113389)
+F Statistic         6,823.799*** (df = 32; 113389)
+==================================================
+Note:                  *p&lt;0.1; **p&lt;0.05; ***p&lt;0.01
+</code></pre><aside class="notes">Here is the fitted model. Detached houses are the reference type, so the flat coefficient of minus 0.205 means a flat sells for about 19 per cent less than a comparable detached house. Comparable here includes tenure: the model estimates leasehold separately, and most flats are leasehold, so the gap between a typical flat and a typical detached house is larger than this one coefficient suggests.</aside></section>
+<section><h2>Index based on year dummies<span class="subtitle"><br/>1995 is the base year.</span></h2><ul><li>Index estimate for 2017: 541. (\(\small e^{1.689}\times100=5.41\times100=541\))</li></ul><pre><code data-noescape data-line-numbers="88">
+==================================================
+                         Dependent variable:
+                    ------------------------------
+                              log(price)
+--------------------------------------------------
+propertytypeF                 -0.205***
+                               (0.009)
+
+propertytypeS                 -0.367***
+                               (0.003)
+
+propertytypeT                 -0.412***
+                               (0.003)
+
+newY                           0.127***
+                               (0.003)
+
+tenureL                       -0.491***
+                               (0.008)
+
+tenureU                         -0.260
+                               (0.412)
+
+year1996                        0.005
+                               (0.009)
+
+year1997                       0.134***
+                               (0.009)
+
+year1998                       0.239***
+                               (0.009)
+
+year1999                       0.327***
+                               (0.009)
+
+year2000                       0.492***
+                               (0.009)
+
+year2001                       0.627***
+                               (0.009)
+
+year2002                       0.799***
+                               (0.009)
+
+year2003                       0.918***
+                               (0.009)
+
+year2004                       0.987***
+                               (0.009)
+
+year2005                       1.044***
+                               (0.009)
+
+year2006                       1.127***
+                               (0.009)
+
+year2007                       1.232***
+                               (0.009)
+
+year2008                       1.168***
+                               (0.010)
+
+year2009                       1.126***
+                               (0.010)
+
+year2010                       1.214***
+                               (0.010)
+
+year2011                       1.230***
+                               (0.010)
+
+year2012                       1.258***
+                               (0.010)
+
+year2013                       1.350***
+                               (0.009)
+
+year2014                       1.434***
+                               (0.009)
+
+year2015                       1.551***
+                               (0.009)
+
+year2016                       1.645***
+                               (0.009)
+
+year2017                       1.689***
+                               (0.009)
+
+year2018                       1.638***
+                               (0.010)
+
+year2019                       1.642***
+                               (0.010)
+
+year2020                       1.666***
+                               (0.010)
+
+year2021                       1.704***
+                               (0.012)
+
+Constant                      11.550***
+                               (0.007)
+
+--------------------------------------------------
+Observations                   113,422
+R2                              0.658
+Adjusted R2                     0.658
+Residual Std. Error      0.412 (df = 113389)
+F Statistic         6,823.799*** (df = 32; 113389)
+==================================================
+Note:                  *p&lt;0.1; **p&lt;0.05; ***p&lt;0.01
+</code></pre><aside class="notes">The year coefficients are the part we need for the index. 1995 is the omitted base year, so each coefficient compares that year with 1995, holding the included characteristics constant. For 2017 the coefficient is 1.689. Exponentiating gives 5.41, so the index stands at 541. Next we do this for every year in R.</aside></section>
 <section><h2>Turn time coefficients into an index<span class="subtitle"><br/>The base-year coefficient is normalised to zero.</span></h2><ul><li>Normalise the base-period coefficient to zero:</li></ul><p class="formula">\(I_t=100\exp(\hat{\gamma}_t),\quad I_{\text{base}}=100\)</p><pre><code class="language-r" data-trim data-noescape>years &lt;- levels(sales$year)
 b &lt;- coef(hed)
 year_terms &lt;- grep("^year", names(b), value = TRUE)
@@ -36,20 +264,20 @@ gamma &lt;- c(0, b[year_terms])
 hedonic_index &lt;- data.frame(
   year = years,
   index = 100 * exp(as.numeric(gamma))
-)</code></pre><ul><li>Example: \(\hat{\gamma}_{2017}=1.689\), so \(I_{2017}=100\times e^{1.689}\approx541\). With factor coding, confirm the omitted year and coefficient names in your fitted model before relying on extraction order.</li></ul></section>
-<section><h2>Compare the series<span class="subtitle"><br/>Estimates not too different? Sample is relatively homogeneous?</span></h2><div class="figure"><img src="imgs/index_hedonic.jpg" height="340" alt="Mean, median and hedonic Cambridge price indices"></div><ul><li>Unadjusted series reflect the homes sold in each period</li><li >The hedonic series aims to hold included characteristics constant</li><li >Differences reveal the influence of composition and model specification</li></ul></section>
-<section><h2>Compare annual returns too<span class="subtitle"><br/>Diff. in 2002/03, 2008, 2012, 2021... Quality differences matter!</span></h2><div class="figure"><img src="imgs/index_hedonic_returns.jpg" height="340" alt="Annual returns from mean, median and hedonic series"></div><ul><li>Return from an index level: \(\left(\dfrac{I_t}{I_{t-1}}-1\right)\times100\)</li><li><mark>Small differences in index levels can translate into meaningful differences in measured annual growth</mark></li></ul></section>
-<section><h2>Repeat-sales index<span class="subtitle"><br/>Hedonic regressions cannot capture all quality details!</span></h2><ul><li>Often only address, price and date are known—no hedonic characteristics</li><li>Focus on pairs of transactions of the same building<ul><li>Location unchanged; quality assumed unchanged (capex &amp; depreciation?); any price change is a true time trend</li></ul></li><li>Drawback<ul><li>Wastes data: buildings sold only once are discarded</li><li>Is the sample representative? Starter homes trade more often—overrepresented in the index.</li></ul></li></ul></section>
+)</code></pre><ul><li>Example: \(\hat{\gamma}_{2017}=1.689\), so \(I_{2017}=100\times e^{1.689}\approx541\). With factor coding, confirm the omitted year and coefficient names in your fitted model before relying on extraction order.</li></ul><aside class="notes">To turn the time effects into an index, set the reference period’s coefficient to zero and exponentiate each coefficient, scaling by 100. A coefficient of 1.689 corresponds to an index near 541, meaning the fitted price level is about 5.4 times the base-period level, conditional on the model. In practice, check the reference year and coefficient names carefully; factor coding determines which year is omitted.</aside></section>
+<section><h2>Compare the series<span class="subtitle"><br/>Estimates not too different? Sample is relatively homogeneous?</span></h2><div class="figure"><img src="imgs/index_hedonic.jpg" height="340" alt="Mean, median and hedonic Cambridge price indices"></div><ul><li>Unadjusted series reflect the homes sold in each period</li><li >The hedonic series aims to hold included characteristics constant</li><li >Differences reveal the influence of composition and model specification</li></ul><aside class="notes">The hedonic series and the raw mean and median are telling related, but not identical, stories. The first two reflect the transactions in each year directly; the hedonic index adjusts for the characteristics included in the regression. The remaining differences reflect composition as well as modelling choices, so they need interpretation rather than a simple winner-and-loser verdict.</aside></section>
+<section><h2>Compare annual returns too<span class="subtitle"><br/>Diff. in 2002/03, 2008, 2012, 2021... Quality differences matter!</span></h2><div class="figure"><img src="imgs/index_hedonic_returns.jpg" height="340" alt="Annual returns from mean, median and hedonic series"></div><ul><li>Return from an index level: \(\left(\dfrac{I_t}{I_{t-1}}-1\right)\times100\)</li><li><mark>Small differences in index levels can translate into meaningful differences in measured annual growth</mark></li></ul><aside class="notes">It is also worth comparing annual returns, calculated from consecutive index levels. The series differ in several years, including around 2008. Even when index levels look broadly similar, modest differences between adjacent years can produce quite different growth estimates.</aside></section>
+<section><h2>Repeat-sales index<span class="subtitle"><br/>Hedonic regressions cannot capture all quality details!</span></h2><ul><li>Often only address, price and date are known—no hedonic characteristics</li><li>Focus on pairs of transactions of the same building<ul><li>Location unchanged; quality assumed unchanged (capex &amp; depreciation?); any price change is a true time trend</li></ul></li><li>Drawback<ul><li>Wastes data: buildings sold only once are discarded</li><li>Is the sample representative? Starter homes trade more often—overrepresented in the index.</li></ul></li></ul><aside class="notes">A repeat-sales index takes a different route: it compares transactions for the same property at two points in time. This controls for fixed characteristics such as location, but assumes the property’s quality has not changed. Renovation and depreciation complicate that assumption. The method also discards properties sold only once, and frequently traded homes may be overrepresented.</aside></section>
 <section><h2>Repeat-sales index<span class="subtitle"><br/>Putting the intuition into formulas...</span></h2><ul><li>Hedonic price given as function of time (Y) and hedonics (X):
 $$ \tiny \ln( Price_{i, t1} ) = \alpha + \sum_{k=1}^{k=K} \beta_kX_{k,i} +  \sum_{y=1995}^{y=2021} \gamma_kY_{y,i} + \epsilon_i
  $$</li><li>Difference between two prices at time $t_2$ and $t_1$ is difference between hedonic equation: $$ \tiny
 \ln(Price_{i, t2}) - \ln(Price_{i, t1}) = ( \alpha + \sum_{k=1}^{k=K} \beta_kX_{k,i} +  \sum_{y2=1995}^{y2=2021} \gamma_kY_{y2,i} + \epsilon_{i, t2}) - ( \alpha + \sum_{k=1}^{k=K} \beta_kX_{k,i} +  \sum_{y1=1995}^{y1=2021} \gamma_kY_{y1,i} + \epsilon_{i, t1}) \\
 \tiny  =   \sum_{y2=1995}^{y2=2021} \gamma_kY_{y2,i} + \epsilon_{i, t2}   - \sum_{y1=1995}^{y1=2021} \gamma_kY_{y1,i} - \epsilon_{i, t1} \\
 \tiny  =   \sum_{y2=1995}^{y2=2021} \gamma_kY_{y2,i}   - \sum_{y1=1995}^{y1=2021} \gamma_kY_{y1,i} - \mu_{i, t2,t1}
-$$</li><li>All constant terms drop out, the "pure" time trend remains</li></ul></section>
-<section><h2>Hedonic vs repeat sales<span class="subtitle"><br/>Correction in crisis faster—but shorter?</span></h2><div class="figure"><img src="imgs/index_hedonic_repeat.jpg" height="450" alt="Hedonic and repeat-sales Cambridge price indices"></div></section>
-<section><h2>Interpretation and limitations<span class="subtitle"><br/>What the index does—and does not—measure</span></h2><ul><li>Quality adjustment reduces one source of composition bias; it does not make the sample representative by itself</li><li >Unobserved condition, renovation, micro-location and transaction selection can still matter</li><li >Results depend on period frequency, sample rules and regression specification</li><li >A residential Cambridge index is not a commercial property valuation or a total-return series</li></ul></section>
-<section><h2>Try a variation<span class="subtitle"><br/>This is one way of modelling these data, not the only one.</span></h2><ul><li>Use the code and adapt it<ul><li>Estimate annual and quarterly time effects: how does volatility change?</li><li>Add or remove an available characteristic: what changes?</li><li>Compare the return series through the financial crisis</li><li>Inspect which sales enter the sample and how exclusions affect the result</li></ul></li></ul></section>
+$$</li><li>All constant terms drop out, the "pure" time trend remains</li></ul><aside class="notes">The intuition is to subtract the log-price equation for the first sale from the equation for the later sale. Fixed property characteristics and the common intercept cancel, leaving the difference in time effects plus a differenced error term. That isolates the time component under the assumption that the property’s quality is unchanged between sales.</aside></section>
+<section><h2>Hedonic vs repeat sales<span class="subtitle"><br/>Correction in crisis faster—but shorter?</span></h2><div class="figure"><img src="imgs/index_hedonic_repeat.jpg" height="450" alt="Hedonic and repeat-sales Cambridge price indices"></div><aside class="notes">This comparison shows that the hedonic and repeat-sales approaches need not give the same path. They use different samples and rely on different assumptions, so differences—such as the timing and duration of a downturn—are informative. Neither method removes every source of bias.</aside></section>
+<section><h2>Interpretation and limitations<span class="subtitle"><br/>What the index does—and does not—measure</span></h2><ul><li>Quality adjustment reduces one source of composition bias; it does not make the sample representative by itself</li><li >Unobserved condition, renovation, micro-location and transaction selection can still matter</li><li >Results depend on period frequency, sample rules and regression specification</li><li >A residential Cambridge index is not a commercial property valuation or a total-return series</li></ul><aside class="notes">These indices estimate price movement for this residential Cambridge sample, under specific data and modelling choices. Quality adjustment can reduce one source of composition bias, but it does not make the transactions representative, and unobserved condition, renovation, precise location and selection still matter. They are price indices, not commercial property valuations or total-return measures.</aside></section>
+<section><h2>Try a variation<span class="subtitle"><br/>This is one way of modelling these data, not the only one.</span></h2><ul><li>Use the code and adapt it<ul><li>Estimate annual and quarterly time effects: how does volatility change?</li><li>Add or remove an available characteristic: what changes?</li><li>Compare the return series through the financial crisis</li><li>Inspect which sales enter the sample and how exclusions affect the result</li></ul></li></ul><aside class="notes">You can now vary the specification and see how the estimates respond. Try a different time frequency, add or remove an available characteristic, or inspect which sales enter the sample. The key is to explain what changed in the estimate and which assumptions or sample features might account for it.</aside></section>
 </div></div>
 <script src="dist/reveal.js"></script><script src="plugin/notes/notes.js"></script><script src="plugin/markdown/markdown.js"></script><script src="plugin/highlight/highlight.js"></script><script src="plugin/math/math.js"></script><script>Reveal.initialize({hash:true,transition:'none',width:1244,height:700,margin:.1,math:{mathjax:'https://cdn.jsdelivr.net/gh/mathjax/mathjax@2.7.8/MathJax.js',config:'TeX-AMS_HTML-full',inlineMath:[['$','$'],['\\(','\\)']],processEscapes:true},plugins:[RevealMarkdown,RevealHighlight,RevealNotes,RevealMath]});</script>
 </body></html>

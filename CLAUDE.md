@@ -36,8 +36,12 @@ Three separate, logically distinct Reveal.js documents, plus any required data, 
 
 - Follow the structure and conventions of `/home/thies/talks/talk-rem1-session3/`. Reveal.js is shared from `/home/thies/talks/reveal.js/`.
 - Preserve the established theme and conventions unless there is a good reason to change them.
-- Use Reveal.js fragments for progressive calculations and explanations.
-- Ensure mathematical notation renders correctly.
+- Default slide layout: title, subtitle, then bullets. Depart from it only where a table or figure needs to.
+- Do not use Reveal.js fragments: bullets, table rows and formulas appear at once. Where students should answer first, put the answer on the following slide.
+- Inside bullets and table cells, write numerical calculations on one line with `\div` so numbers stay at text size; use `\frac` (not `\dfrac`) only for short symbolic definitions; definitions with word labels (e.g. Value = Annual NOI ÷ Required yield) also go on one line with `\div`. `\dfrac` only in display `.formula` paragraphs.
+- Maths renders with MathJax 4 (pinned, jsdelivr) in the sans-serif `mathjax-fira` font, via Reveal's `RevealMath.MathJax4` plugin; only `\(…\)` delimiters, no `$…$`.
+- Write formulas in proper LaTeX, not plain text with `÷`, `<sub>` or `<sup>`, and set multi-letter names upright (`\text{NOI}`). Ensure mathematical notation renders correctly.
+- Centre figures, using `<div class="figure">`.
 - Keep source files editable. Do not embed entire slides as images.
 - Make charts reproducible where practical, with clear source information.
 - Keep the lecture easy to update in future years.
@@ -46,7 +50,7 @@ Three separate, logically distinct Reveal.js documents, plus any required data, 
 
 - **Existing RE02 lecture:** `/home/thies/teaching/RE02/material-2025-2026/MT Materials/RE02 MT 2025 5.pdf` (24 slides, 11 November 2025). Retain selectively. Consider reusing the MSCI illustrations of income growth, capital growth, equivalent yield and total return (slides 17–20). International investment and currency hedging are not central.
 - **REM1 Session 3:** `/home/thies/teaching/rem1/slides 2026/REM1-Session 3-Real Estate Indices & Measuring Performance.pdf` (45 slides, September 2026), with editable source in `/home/thies/talks/talk-rem1-session3/` (`index.html`, `tweaks.css`). Slides 25–45 are particularly important: the Cambridge Land Registry example (about 113,000 transactions, 1995–2021) in R, from descriptive statistics to quality-adjusted indices.
-- **Geltner et al., *Commercial Real Estate Analysis*:** `/home/thies/teaching/rem1/textbook/`. Chapter 1 is `9781041081197c01_p1-28_LS_AM.pdf`; Chapter 3 covers returns and IRR; Chapters 2–15 are also available. Attribute material to the specific supplied chapter used, and do not attribute formulas or material to chapters that have not been supplied.
+- **Geltner, D.M., Miller, N.G., Van De Minne, A., Eichholtz, P., Lindenthal, T., & Shen, L. (2026). *Commercial Real Estate Analysis for Investment, Finance, and Development* (4th ed.). Routledge:** `/home/thies/teaching/rem1/textbook/`. Chapter 1 is `9781041081197c01_p1-28_LS_AM.pdf`; Chapter 3 covers returns and IRR; Chapters 2–15 are also available. Attribute material to the specific supplied chapter used, and do not attribute formulas or material to chapters that have not been supplied. On the live lecture slides, do not cite the book in source notes or text; it appears only in Further reading.
 
 ## Demonstration 1: Cambridge hedonic price index
 
@@ -90,9 +94,11 @@ Three separate, logically distinct Reveal.js documents, plus any required data, 
 
 ## Running numerical example
 
-- Use one hypothetical Cambridge office investment throughout the live lecture.
+- Use one hypothetical office investment in Hull throughout the live lecture.
 - Start with acquisition price and passing rent, then progressively introduce market rent, vacancy, operating expenditure, capital expenditure, financing terms and terminal sale assumptions.
 - Keep inputs consistent so students can calculate several metrics for the same building.
-- Keep figures realistic for Cambridge commercial property, and label them clearly as illustrative unless independently sourced.
+- Keep figures in £, realistic for a secondary regional office (Hull yields around 9–9.5%; base case has positive leverage, the exit-yield stress case negative leverage), and label them clearly as illustrative unless independently sourced.
+- All running-example figures come from `running-example.R`; change its inputs and re-run to update the slides.
 - Purchase costs are 6.8% (illustrative). The UK yield slide uses them; the cash flows, IRR and NPV currently exclude them.
+- Lectures 2–4 already cover cap rate = NOI/value and the four-quadrant model (Weeks 2–3), required return build-up, DCF and terminal value, and appraisal smoothing (Week 3), and show AI-generated IRR/NPV/multiple output (Week 4). Treat these as brief recaps and refer back.
 - Include occasional questions asking students to calculate or interpret a metric before the answer is revealed.

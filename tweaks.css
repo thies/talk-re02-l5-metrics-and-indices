@@ -89,7 +89,9 @@ section { text-align:left; }
   font-color: #000000;
 }
 .centred { text-align: center;}
-.darkonlight{background-color: #ffffff; color: #000000;}
+.darkonlight{background-color: rgba(255,255,255,0.8); color: #000000;}
+/* one translucent layer only: no extra backgrounds inside a darkonlight list */
+ul.darkonlight .darkonlight{background-color: transparent;}
 
 .boxwrapper {
     border: none;
@@ -133,6 +135,10 @@ span.smalltable >* td,th {
 .reveal section.tablebullettext table th,
 .reveal section.tablebullettext table td {
   font-size: 1em;
+}
+/* denser table, smaller than bullet text */
+.reveal section.tablebullettext table.small {
+  font-size: 0.55em;
 }
 
 /* small label above a figure in a table cell */
