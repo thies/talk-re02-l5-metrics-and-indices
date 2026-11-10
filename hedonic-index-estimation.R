@@ -1,8 +1,10 @@
 # Cambridge residential hedonic price index
 # Run this file with the project directory as the working directory.
-# Input: sales_cambridge.csv (Land Registry sales matching "CAMBRIDGE", to August 2021)
+# Input: sales_cambridge.csv (Land Registry sales matching "CAMBRIDGE", to August 2021),
+# read from the Dropbox copy
 
-sales <- read.csv("sales_cambridge.csv", header = FALSE, stringsAsFactors = FALSE)
+sales_url <- "https://www.dropbox.com/s/17po0isp50in67k/sales_cambridge.csv?dl=1"
+sales <- read.csv(sales_url, header = FALSE, stringsAsFactors = FALSE)
 colnames(sales) <- c(
   "id", "price", "date", "postcode", "propertytype", "new", "tenure",
   "paon", "saon", "street", "locality", "town", "district", "county",
